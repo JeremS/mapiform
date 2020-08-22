@@ -1,0 +1,12 @@
+#kaocha/v1
+    {:tests [{
+              :id :unit-clj
+              :source-paths ["src/main/common" "src/main/clj"]
+              :test-paths ["test/common" "test/cljs"]
+              :ns-patterns ["-test$"]}
+
+             {:id :unit-cljs
+              :type :kaocha.type/cljs
+              :source-paths ["src/main/common" "src/main/cljs"]
+              :test-paths ["test/common" "test/cljs"]
+              :ns-patterns ["-test$"]}]}
