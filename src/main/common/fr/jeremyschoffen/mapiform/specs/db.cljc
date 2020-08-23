@@ -8,9 +8,6 @@
 (def specs-store (atom {}))
 (def meta-store (atom {}))
 
-(defn get-spec [sym]
-  (get @specs-store sym))
-
 
 (defn add-spec! [fn-name spec]
   (swap! specs-store assoc fn-name spec))
@@ -28,10 +25,6 @@
   (apply swap! meta-store update-meta id f args))
 
 
-(defn get-deps* [specs-map sym]
-  (get-in specs-map [sym :deps] #{}))
-
-
 (defn- merge-param-specs* [param-specs type]
   (into (sorted-set)
         (mapcat type)
@@ -45,52 +38,33 @@
    :opt-un (merge-param-specs* param-specs :opt-un)})
 
 
-(defn get-param-specs-suggestions* [spec-map sym]
-  (let [deps (get-deps* spec-map sym)]
-    (with-meta (->> deps
-                    (into [] (comp (map (partial get spec-map))
-                                   (map :param)))
-                    merge-param-specs)
-               {:details (select-keys spec-map deps)})))
+(defn get-deps* [db sym]
+  (get-in db [sym :deps] #{}))
 
 
-(defn get-param-specs-suggestions [sym]
-  (get-param-specs-suggestions* @specs-store sym))
+(defn get-suggestions* [db sym]
+  (let [deps (get-deps* db sym)]
+    (->> deps
+         (into [] (comp (map (partial get db))
+                        (map :param)))
+         merge-param-specs)))
 
 
-(defn get-param-specs [sym]
-  {:spec (get-spec sym)
-   :transitive-suggestions (get-param-specs-suggestions sym)})
+(defn report [sym]
+  (let [db @specs-store
+        deps (get-deps* db sym)]
+    {:deps deps
+     :spec (get db sym)
+     :suggestions (get-suggestions* db sym)
+     :suggestions-sources (select-keys db deps)}))
 
 
-(defn requirer
-  "Return a set of all function depending on that keyword."
+(defn param-users
+  "Return a set of all functions depending on the keyword `kw`."
   [kw]
   (into #{}
         (keep (fn [[f spec]]
-                (let [param-spec (:param spec)
-                      {:keys [req opt]} param-spec]
-                  (when (or (contains? req kw)
-                            (contains? opt kw))
-                    f))))
+                (when (some #(contains? % kw)
+                            (-> spec :param vals))
+                  f)))
         @specs-store))
-
-
-
-
-
-
-(comment
-  (defn toto [x] x)
-
-  (update-meta {} toto assoc :name `toto)
-
-
-
-
-
-
-
-  (update-meta! toto assoc :name `toto)
-
-  @meta-store)

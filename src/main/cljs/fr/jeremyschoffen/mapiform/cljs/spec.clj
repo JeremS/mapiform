@@ -55,16 +55,25 @@
 (s/fdef spec-op
         :args ::h/spec-op-args)
 
-
-(defmacro param-suggestions
-  "Search the function spec and the declared dependencies specs transitively to
-  find all the potential params the function may require."
+(defmacro report
+  "Get spec data for `sym`."
   [sym]
-  `(db/get-param-specs-suggestions '~(ns-qualify &env sym)))
+  `(db/report '~(ns-qualify &env sym)))
+
+(defmacro dependencies
+  "Find the nes of the functions `sym` depends on."
+  [sym]
+  `(:deps (report ~sym)))
 
 
 (defmacro param-specs
-  "Search the function spec and the declared dependencies specs transitively to
-  find all the potential params the function may require."
+  "Get the spec of the function named `sym` and the specs of its dependencies."
   [sym]
-  `(db/get-param-specs '~(ns-qualify &env sym)))
+  `(:spec (report ~sym)))
+
+
+(defmacro param-suggestions
+  "Search the dependencies specs of the function named `sym` to
+  find all the potential parameters the function may require."
+  [sym]
+  `(:suggestions (report ~sym)))

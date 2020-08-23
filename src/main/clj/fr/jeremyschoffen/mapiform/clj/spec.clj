@@ -1,6 +1,7 @@
 (ns fr.jeremyschoffen.mapiform.clj.spec
   (:require
     [clojure.spec.alpha :as s]
+    [fr.jeremyschoffen.dolly.core :as dolly]
     [fr.jeremyschoffen.mapiform.specs.macro-helpers :as h]
     [fr.jeremyschoffen.mapiform.specs.db :as db]))
 
@@ -46,17 +47,30 @@
         :args ::h/spec-op-args)
 
 
-(defmacro param-suggestions
-  "Search the function spec and the declared dependencies specs transitively to
-  find all the potential params the function may require."
+(defmacro report
+  "Get spec data for `sym`."
   [sym]
-  `(db/get-param-specs-suggestions '~(ns-qualify sym)))
+  `(db/report '~(ns-qualify sym)))
+
+(defmacro dependencies
+  "Find the nes of the functions `sym` depends on."
+  [sym]
+  `(:deps (report ~sym)))
 
 
 (defmacro param-specs
-  "Search the function spec and the declared dependencies specs transitively to
-  find all the potential params the function may require."
+  "Get the spec of the function named `sym` and the specs of its dependencies."
   [sym]
-  `(db/get-param-specs '~(ns-qualify sym)))
+  `(:spec (report ~sym)))
 
-(comment)
+
+(defmacro param-suggestions
+  "Search the dependencies specs of the function named `sym` to
+  find all the potential parameters the function may require."
+  [sym]
+  `(:suggestions (report ~sym)))
+
+
+
+
+(dolly/def-clone param-users db/param-users)
