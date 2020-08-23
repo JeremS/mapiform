@@ -2,13 +2,15 @@
   (:require
     [medley.core :as medley]))
 
-
+;;----------------------------------------------------------------------------------------------------------------------
+;; Assoc-like operations
+;;----------------------------------------------------------------------------------------------------------------------
 (defn- check-kfs [kfs]
   (when-not (even? (count kfs))
     (throw (ex-info "Expected even number of arguments." {}))))
 
 
-(defn wrap-rf [f]
+(defn- wrap-rf [f]
   (fn [m [k f']]
     (f m k f')))
 
@@ -63,6 +65,9 @@
   (reduce-kvs augment-1 m kvs))
 
 
+;;----------------------------------------------------------------------------------------------------------------------
+;; Threading helpers
+;;----------------------------------------------------------------------------------------------------------------------
 (defn thread-fns
   "Function serving a similar purpose than the `->` macro. It will  thread a value `v` through a sequence of
   functions `fns` the result of one function application becoming the argument of the next.
@@ -77,10 +82,39 @@
           fns))
 
 
-(defn perform!
-  ([f!]
-   (fn [v]
-     (perform! v f!)))
-  ([v f!]
-   (f! v)
-   v))
+(defn side-effect!
+  "Mark a function as side effect either for use with [[fr.jeremyschoffen.mapiform.core/thread-fns]]
+  (arity 1) or [[clojure.core/->]] (arity 2).
+
+  examples:
+  ```clojure
+  ((side-effect! println) 1)
+  ;1
+  ;=> 1
+
+  (-> 1
+      inc ; 2
+      (thread-fns dec ;1
+                  (side-effect! println)
+                  inc) ;2
+      (side-effect! println)
+      dec);1
+  ;1
+  ;2
+  ;=> 1
+  ```"
+  ([f]
+   (fn [ctxt]
+     (side-effect! ctxt f)))
+  ([ctxt f]
+   (f ctxt)
+   ctxt))
+
+
+(defn wrapped-side-effect!
+  "Similar to [[fr.jeremyschoffen.mapiform.core/side-effect!]] with the added functionnality
+  of wrapping the function `f` with the middleware `wrapper`."
+  ([f wrapper]
+   (side-effect! (wrapper f)))
+  ([ctxt f wrapper]
+   (side-effect! ctxt (wrapper f))))

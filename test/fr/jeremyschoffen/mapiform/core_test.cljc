@@ -31,3 +31,39 @@
           :b {:aa 1, :ab 3}})))
 
 
+
+(def ^:dynamic *recorder* nil)
+
+
+(defn record! [x]
+  (when *recorder*
+    (swap! *recorder* conj x)))
+
+
+(defn wrap-recorder [f]
+  (fn [arg]
+    (record! arg)
+    (f arg)))
+
+
+(deftest side-effects
+  (is (= (-> 1
+             inc
+             (c/thread-fns dec
+                           (c/side-effect! println)
+                           inc)
+             (c/side-effect! println)
+             dec)
+         1))
+
+  (is (= (binding [*recorder* (atom [])]
+           (-> 1
+               inc
+               (c/thread-fns dec
+                             (c/wrapped-side-effect! println wrap-recorder)
+                             inc)
+               (c/wrapped-side-effect! println wrap-recorder)
+               dec
+               vector
+               (conj @*recorder*)))
+         [1 [1 2]])))
