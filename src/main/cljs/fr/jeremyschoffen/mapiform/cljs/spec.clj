@@ -48,7 +48,6 @@
         qualified-name (ns-qualify &env n)]
     `(do
        (db/add-spec! '~qualified-name '~sanitized)
-       (db/update-meta! ~n assoc :name '~qualified-name)
        ~(h/make-defn-spec-form-cljs n sanitized))))
 
 

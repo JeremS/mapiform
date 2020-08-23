@@ -6,23 +6,10 @@
 
 
 (def specs-store (atom {}))
-(def meta-store (atom {}))
 
 
 (defn add-spec! [fn-name spec]
   (swap! specs-store assoc fn-name spec))
-
-
-(defn meta [x]
-  (get @meta-store x))
-
-
-(defn update-meta [db id f & args]
-  (apply update db id f args))
-
-
-(defn update-meta! [id f & args]
-  (apply swap! meta-store update-meta id f args))
 
 
 (defn- merge-param-specs* [param-specs type]

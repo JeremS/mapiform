@@ -40,7 +40,6 @@
         qualified-name (ns-qualify n)]
     `(do
        (db/add-spec! '~qualified-name '~sanitized)
-       (db/update-meta! ~n assoc :name '~qualified-name)
        ~(h/make-defn-spec-form-clj n sanitized))))
 
 (s/fdef spec-op
