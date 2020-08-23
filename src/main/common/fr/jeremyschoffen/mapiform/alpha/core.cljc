@@ -1,4 +1,4 @@
-(ns fr.jeremyschoffen.mapiform.core
+(ns fr.jeremyschoffen.mapiform.alpha.core
   (:require
     [medley.core :as medley]))
 

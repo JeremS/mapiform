@@ -1,9 +1,9 @@
-(ns fr.jeremyschoffen.mapiform.cljs.spec
+(ns fr.jeremyschoffen.mapiform.alpha.cljs.spec
   (:require
     [clojure.spec.alpha :as s]
     [cljs.analyzer :as ana]
-    [fr.jeremyschoffen.mapiform.specs.macro-helpers :as h]
-    [fr.jeremyschoffen.mapiform.specs.db :as db]))
+    [fr.jeremyschoffen.mapiform.alpha.specs.macro-helpers :as h]
+    [fr.jeremyschoffen.mapiform.alpha.specs.db :as db]))
 
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; from cljs.spec.alpha

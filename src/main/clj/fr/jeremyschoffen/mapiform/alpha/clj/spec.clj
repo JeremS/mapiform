@@ -1,9 +1,9 @@
-(ns fr.jeremyschoffen.mapiform.clj.spec
+(ns fr.jeremyschoffen.mapiform.alpha.clj.spec
   (:require
     [clojure.spec.alpha :as s]
     [fr.jeremyschoffen.dolly.core :as dolly]
-    [fr.jeremyschoffen.mapiform.specs.macro-helpers :as h]
-    [fr.jeremyschoffen.mapiform.specs.db :as db]))
+    [fr.jeremyschoffen.mapiform.alpha.specs.macro-helpers :as h]
+    [fr.jeremyschoffen.mapiform.alpha.specs.db :as db]))
 
 (defn- ns-qualify
   "Qualify symbol s by resolving it or using the current *ns*."

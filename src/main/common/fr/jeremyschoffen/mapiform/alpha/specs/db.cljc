@@ -1,8 +1,4 @@
-(ns fr.jeremyschoffen.mapiform.specs.db
-  (:refer-clojure :exclude [meta])
-  (:require
-    #?@(:clj [[clojure.spec.alpha :as s]]
-        :cljs [[cljs.spec.alpha :as s :include-macros true]])))
+(ns fr.jeremyschoffen.mapiform.alpha.specs.db)
 
 
 (def specs-store (atom {}))

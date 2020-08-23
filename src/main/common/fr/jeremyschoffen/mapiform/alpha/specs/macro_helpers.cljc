@@ -1,4 +1,4 @@
-(ns fr.jeremyschoffen.mapiform.specs.macro-helpers
+(ns fr.jeremyschoffen.mapiform.alpha.specs.macro-helpers
   (:require
     #?(:clj [clojure.spec.alpha :as s]
        :cljs [clojure.spec.alpha :as s])))

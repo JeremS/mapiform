@@ -1,15 +1,15 @@
-(ns fr.jeremyschoffen.mapiform.spec-test
+(ns fr.jeremyschoffen.mapiform.alpha.spec-test
   #?(:clj (:require
             [clojure.test :refer :all]
             [clojure.spec.alpha :as s]
             [orchestra.spec.test :as st]
-            [fr.jeremyschoffen.mapiform.clj.spec :as ms])
+            [fr.jeremyschoffen.mapiform.alpha.clj.spec :as ms])
 
      :cljs (:require
              [cljs.test :refer [deftest is testing are]]
              [cljs.spec.alpha :as s :include-macros true]
              [orchestra-cljs.spec.test :as st :include-macros true]
-             [fr.jeremyschoffen.mapiform.cljs.spec :as ms :include-macros true])))
+             [fr.jeremyschoffen.mapiform.alpha.cljs.spec :as ms :include-macros true])))
 
 
 (s/def ::a int?)

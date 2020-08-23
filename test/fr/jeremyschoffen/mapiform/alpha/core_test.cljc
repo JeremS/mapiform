@@ -1,8 +1,8 @@
-(ns fr.jeremyschoffen.mapiform.core-test
+(ns fr.jeremyschoffen.mapiform.alpha.core-test
   (:require
     #?(:clj [clojure.test :refer :all]
        :cljs [cljs.test :refer-macros [deftest is testing]])
-    [fr.jeremyschoffen.mapiform.core :as c]))
+    [fr.jeremyschoffen.mapiform.alpha.core :as c]))
 
 
 (deftest assoc-tests
