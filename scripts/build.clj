@@ -14,7 +14,7 @@
 
 
 (def specific-conf (sorted-map
-                     :project/name "textp-reader"
+                     :project-name "mapifom"
                      :project/author "Jeremy Schoffen"
                      :maven/group-id 'fr.jeremyschoffen
                      :versioning/major :alpha
@@ -26,12 +26,37 @@
                                          :project.license/file (u/safer-path "LICENSE")}]))
 
 
-(def conf (mbt-defaults/make-conf specific-conf))
+(def conf-clj (->  specific-conf
+                   (assoc
+                     :project/output-dir (u/safer-path "target" "clj")
+                     :project.deps/aliases [:common-part :clojure-part])
+                   mbt-defaults/make-conf
+                   (u/assoc-computed :project/deps mbt-core/deps-get)))
+
+
+(def conf-cljs (-> specific-conf
+                   (assoc :project/name "mapiform-cljs"
+                          :project/output-dir (u/safer-path "target" "cljs")
+                          :project.deps/aliases [:cljs-part])
+                   mbt-defaults/make-conf
+                   (u/assoc-computed :project/deps mbt-core/deps-get)))
+
+
+
+(defn make-readme! [{v :project/version
+                     :as conf}]
+  (let [clj-maven-coords (-> conf-clj
+                             (assoc :project/version v)
+                             mbt-core/deps-make-coord)
+        cljs-maven-coords (-> conf-cljs
+                              (assoc :project/version v)
+                              mbt-core/deps-make-coord)]
+    (docs/make-readme! (merge conf {:clj-coords clj-maven-coords
+                                    :cljs-coords cljs-maven-coords}))))
 
 
 (defn make-docs! [conf]
-  (let [maven-coords (mbt-core/deps-make-coord conf)]
-    (docs/make-readme! maven-coords)))
+  (make-readme! conf))
 
 
 (defn new-milestone! [conf]
@@ -40,11 +65,29 @@
       mbt-defaults/bump-tag!))
 
 
+(defn build-base-jar! []
+  (-> conf-clj
+      (u/side-effect! mbt-defaults/build-jar!)
+      (u/side-effect! mbt-defaults/install!)))
+
+
+(defn add-clj-coords [{v :project/version :as conf}]
+  (let [clj-coords (-> conf-clj
+                       (assoc :project/version v)
+                       mbt-core/deps-make-coord)]
+    (update-in conf [:project/deps :deps] merge clj-coords)))
+
+
+(defn build-cljs-jar! []
+  (-> conf-cljs
+      (assoc :project/version (mbt-defaults/current-project-version conf-clj))
+      add-clj-coords
+      (u/side-effect! mbt-defaults/build-jar!)
+      (u/side-effect! mbt-defaults/install!)))
+
 (comment
-  (str  (mbt-defaults/anticipated-next-version conf))
-  (new-milestone! conf)
+  (new-milestone! conf-clj)
 
-  (mbt-core/clean! conf)
-
-  (mbt-defaults/build-jar! conf)
-  (mbt-defaults/install! conf))
+  (mbt-core/clean! conf-clj)
+  (build-base-jar!)
+  (build-cljs-jar!))

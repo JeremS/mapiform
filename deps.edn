@@ -1,6 +1,6 @@
 {:paths []
  :deps {medley/medley           {:mvn/version "1.3.0"}
-        fr.jeremyschoffen/dolly {:mvn/version "1"}}
+        fr.jeremyschoffen/dolly {:mvn/version "0"}}
 
  :aliases {:common-part {:extra-paths ["./src/main/common"]}
            :clojure-part {:extra-paths ["./src/main/clj"]}
@@ -22,7 +22,7 @@
                                lambdaisland/kaocha-cljs {:mvn/version "0.0-51"}
                                orchestra/orchestra {:mvn/version "2020.07.12-1"}}}
 
-           :build {:paths ["scripts" "src/doc"]
-                   :deps {fr.jeremyschoffen/mbt-alpha-unstable {:mvn/version "8"}
-                          fr.jeremyschoffen/textp-doc-alpha {:local/root "../doc"}}}}}
+           :build {:extra-paths ["scripts" "src/doc"]
+                   :extra-deps {fr.jeremyschoffen/mbt-alpha-unstable {:mvn/version "8"}
+                                fr.jeremyschoffen/textp-doc-alpha {:mvn/version "0"}}}}}
 

@@ -5,6 +5,10 @@
     [fr.jeremyschoffen.mapiform.alpha.specs.macro-helpers :as h]
     [fr.jeremyschoffen.mapiform.alpha.specs.db :as db]))
 
+;;----------------------------------------------------------------------------------------------------------------------
+;; Define specs
+;;----------------------------------------------------------------------------------------------------------------------
+;; from clojure.spec.alpha/ns-qualify
 (defn- ns-qualify
   "Qualify symbol s by resolving it or using the current *ns*."
   [s]
@@ -14,7 +18,7 @@
                 (symbol (name s)))
         s)
     (symbol (str (.name *ns*)) (str s))))
-
+;;----------------------------------------------------------------------------------------------------------------------
 
 (defn- sanitize-deps [deps]
   (->> deps
@@ -46,6 +50,13 @@
         :args ::h/spec-op-args)
 
 
+;;----------------------------------------------------------------------------------------------------------------------
+;; utilities
+;;----------------------------------------------------------------------------------------------------------------------
+(dolly/def-clone get-report db/report)
+(dolly/def-clone param-users db/param-users)
+
+
 (defmacro report
   "Get spec data for `sym`."
   [sym]
@@ -57,7 +68,7 @@
   `(:deps (report ~sym)))
 
 
-(defmacro param-specs
+(defmacro spec
   "Get the spec of the function named `sym` and the specs of its dependencies."
   [sym]
   `(:spec (report ~sym)))
@@ -72,4 +83,4 @@
 
 
 
-(dolly/def-clone param-users db/param-users)
+

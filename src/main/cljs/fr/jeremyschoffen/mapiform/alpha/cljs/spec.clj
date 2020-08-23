@@ -6,6 +6,8 @@
     [fr.jeremyschoffen.mapiform.alpha.specs.db :as db]))
 
 ;;----------------------------------------------------------------------------------------------------------------------
+;; Define specs
+;;----------------------------------------------------------------------------------------------------------------------
 ;; from cljs.spec.alpha
 (defn- ->sym
   "Returns a symbol from a symbol or var"
@@ -54,6 +56,10 @@
 (s/fdef spec-op
         :args ::h/spec-op-args)
 
+
+;;----------------------------------------------------------------------------------------------------------------------
+;; utilities
+;;----------------------------------------------------------------------------------------------------------------------
 (defmacro report
   "Get spec data for `sym`."
   [sym]
@@ -65,7 +71,7 @@
   `(:deps (report ~sym)))
 
 
-(defmacro param-specs
+(defmacro spec
   "Get the spec of the function named `sym` and the specs of its dependencies."
   [sym]
   `(:spec (report ~sym)))
