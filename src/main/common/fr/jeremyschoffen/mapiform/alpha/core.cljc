@@ -20,28 +20,28 @@
   (reduce (wrap-rf f) m (partition 2 kvs)))
 
 
-(defn- assoc-computed-1 [m k f]
+(defn assoc-computed-1 [m k f]
   (assoc m k (f m)))
 
 
-(defn- ensure-computed-1 [m k f]
+(defn ensure-computed-1 [m k f]
   (if (contains? m k)
     m
     (assoc m k (f m))))
 
 
-(defn- ensure-1 [m k v]
+(defn ensure-1 [m k v]
   (ensure-computed-1 m k (constantly v)))
 
 
-(defn- augment-computed-1
+(defn augment-computed-1
   [m k f]
   (let [defaults (get m k)
         res (f m)]
     (assoc m k (medley/deep-merge defaults res))))
 
 
-(defn- augment-1 [m k v]
+(defn augment-1 [m k v]
   (augment-computed-1 m k (constantly v)))
 
 

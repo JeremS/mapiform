@@ -1,7 +1,7 @@
 ◊(require '[fr.jeremyschoffen.textp.alpha.lib.input :refer [*input*]])◊
 
 # Mapiform
-A library to help working with functions of one map argument.
+A library to help work with functions of one map argument.
 
 ## Instalation
 For clojure:
