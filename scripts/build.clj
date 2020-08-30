@@ -17,6 +17,8 @@
   versioning)
 
 
+
+
 (st/instrument
   `[mbt-core/deps-make-coord
     mbt-defaults/versioning-tag-new-version!
@@ -37,21 +39,34 @@
                                      ::project.license/distribution :repo
                                      ::project.license/file (u/safer-path "LICENSE")}]})
 
-(defn clj-jar-out [{out ::project/output-dir}]
+(defn clj-jar-out
+  "Directory specific for the jar containing the clj part of the code."
+  [{out ::project/output-dir}]
   (u/safer-path out "clj"))
 
 
-(defn cljs-jar-out [{out ::project/output-dir}]
+(defn cljs-jar-out
+  "Directory specific for the jar containing the cljs part of the code."
+  [{out ::project/output-dir}]
   (u/safer-path out "cljs"))
 
-(defn dissoc-paths [conf]
+
+(defn maven-pom-path
+  "Pom goes where jar goes."
+  [{jar-out ::build/jar-output-dir}]
+  (u/safer-path jar-out "pom.xml"))
+
+
+(defn dissoc-paths
+  "We get rid of the default paths for building, each artefact merges their own."
+  [conf]
   (update conf ::project/deps dissoc :paths))
 
 
 (def conf-clj (-> base-conf
                   (merge {::project.deps/aliases [:build/clojure]
                           ::build/jar-output-dir (mbt-defaults/config-calc clj-jar-out ::project/output-dir)
-                          ::maven.pom/dir (mbt-defaults/config-calc clj-jar-out ::project/output-dir)})
+                          ::maven.pom/path (mbt-defaults/config-calc maven-pom-path ::build/jar-output-dir)})
                   mbt-defaults/config-make
                   dissoc-paths
                   (->> (into (sorted-map)))))
@@ -63,7 +78,7 @@
                    (merge {::project/name "mapiform-cljs"
                            ::project.deps/aliases [:build/cljs]
                            ::build/jar-output-dir (mbt-defaults/config-calc cljs-jar-out ::project/output-dir)
-                           ::maven.pom/dir (mbt-defaults/config-calc cljs-jar-out ::project/output-dir)})
+                           ::maven.pom/path (mbt-defaults/config-calc maven-pom-path ::build/jar-output-dir)})
                    mbt-defaults/config-make
                    dissoc-paths
                    (->> (into (sorted-map)))))
@@ -73,6 +88,7 @@
 
 (defn artefact-coords-cljs [v]
   (-> conf-cljs (assoc ::project/version v) mbt-core/deps-make-coord))
+
 ;;----------------------------------------------------------------------------------------------------------------------
 ;; Doc gen and creating new git tags
 ;;----------------------------------------------------------------------------------------------------------------------
@@ -109,7 +125,6 @@
 ;;----------------------------------------------------------------------------------------------------------------------
 (defn build-base-jar! [conf]
   (-> conf
-      (update ::project/deps dissoc :paths)
       (u/do-side-effect! mbt-defaults/build-jar!)
       (u/do-side-effect! mbt-defaults/maven-install!)))
 
@@ -136,5 +151,8 @@
 (comment
   (new-milestone!)
 
+  (-> conf-clj
+      (assoc ::project/version "0")
+      mbt-core/maven-sync-pom!)
 
   (mbt-core/clean! conf-clj))
