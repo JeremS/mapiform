@@ -24,7 +24,7 @@
 
            :build/cljs {:extra-paths ["./src/main/cljs"]}
 
-           :build {:paths ["scripts" "src/doc"]
-                   :extra-deps {fr.jeremyschoffen/mbt-alpha {:mvn/version "0"}
-                                fr.jeremyschoffen/textp-doc-alpha {:mvn/version "0"}}}}}
+           :build {:extra-paths ["src/build" "build"]
+                   :extra-deps {fr.jeremyschoffen/mbt-alpha {:local/root "../mbt"}
+                                fr.jeremyschoffen/textp-doc-alpha {:local/root "../textp/textp-doc"}}}}}
 

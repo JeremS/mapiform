@@ -1,0 +1,43 @@
+◊(require '[fr.jeremyschoffen.textp.alpha.lib.input :refer [*input*]])◊
+◊(require '[fr.jeremyschoffen.mbt.alpha.utils :as u])◊
+# Mapiform
+A library to help work with functions of one map argument.
+
+## Installation
+◊(do
+    (u/pseudo-nss project)
+    (def clj-coords (:clj-coords *input*))
+    (def cljs-coords (:cljs-coords *input*))
+    (defn print-coords [c]
+      (binding [*print-namespace-maps* false]
+        (pr-str c)))
+  "")◊
+
+For clojure:
+```clojure
+◊(print-coords
+   (::project/maven-coords clj-coords))◊
+```
+or
+```clojure
+◊(print-coords
+   (::project/git-coords clj-coords))◊
+```
+
+
+For clojurescript:
+```clojure
+◊(print-coords
+   (::project/maven-coords cljs-coords))◊
+```
+or
+```clojure
+◊(print-coords
+   (::project/git-coords cljs-coords))◊
+```
+
+## License
+
+Copyright © 2020 Jeremy Schoffen.
+
+Distributed under the Eclipse Public License version 2.0.
